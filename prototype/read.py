@@ -42,20 +42,20 @@ class getData:
 				counter = counter+1
 
 		# Parses male and female for remissed
-		for patient in REMISSED_PATIENTS:
-			for ind, var in enumerate(REMISSED_PATIENTS[patient]):
+		for patient in self.REMISSED_PATIENTS:
+			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
 				if var == 'M':
-					M_Rem_Pat[patient] = REMISSED_PATIENTS[patient]
+					self.M_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
 				if var == 'F':
-					F_Rem_Pat[patient] = REMISSED_PATIENTS[patient]
+					self.F_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
 
 		# Parses male and female for resistant
-		for patient in RESISTANT_PATIENTS:
-			for ind, var in enumerate(RESISTANT_PATIENTS[patient]):
+		for patient in self.RESISTANT_PATIENTS:
+			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
 				if var == 'M':
-					M_Res_Pat[patient] = RESISTANT_PATIENTS[patient]
+					self.M_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
 				if var == 'F':
-					F_Res_Pat[patient] = RESISTANT_PATIENTS[patient]
+					self.F_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
 
 		for patient in self.REMISSED_PATIENTS:
 			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
@@ -152,14 +152,14 @@ class getData:
 			for patient, y in self.REMISSED_PATIENTS.items():
 				p = patient
 				# print REMISSED_PATIENTS[patient][ind]
-				total = total + (REMISSED_PATIENTS[patient][ind])
+				total = total + (self.REMISSED_PATIENTS[patient][ind])
 			
 			average = total/len(self.REMISSED_PATIENTS)
 			
 			if average > 1:
 				for patient in self.REMISSED_PATIENTS:
 					# print REMISSED_PATIENTS[patient][ind]
-					REMISSED_PATIENTS[patient][ind] = (REMISSED_PATIENTS[patient][ind] - average)/(len(REMISSED_PATIENTS)/2)
+					self.REMISSED_PATIENTS[patient][ind] = (self.REMISSED_PATIENTS[patient][ind] - average)/(len(self.REMISSED_PATIENTS)/2)
 
 			ind = ind +1 
 
@@ -169,14 +169,14 @@ class getData:
 			for patient, y in self.RESISTANT_PATIENTS.items():
 				p = patient
 				# print REMISSED_PATIENTS[patient][ind]
-				total = total + (RESISTANT_PATIENTS[patient][ind])
+				total = total + (self.RESISTANT_PATIENTS[patient][ind])
 			
 			average = total/len(self.RESISTANT_PATIENTS)
 			
 			if average > 1:
 				for patient in self.RESISTANT_PATIENTS:
 					# print REMISSED_PATIENTS[patient][ind]
-					REMISSED_PATIENTS[patient][ind] = (REMISSED_PATIENTS[patient][ind] - average)/(len(REMISSED_PATIENTS)/2)
+					self.REMISSED_PATIENTS[patient][ind] = (self.REMISSED_PATIENTS[patient][ind] - average)/(len(self.REMISSED_PATIENTS)/2)
 			i = i+1
 
 
