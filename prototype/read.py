@@ -120,10 +120,6 @@ class getData:
 				float_elements.append(float(m))
 				self.REMISSED_PATIENTS[x] = float_elements
 
-	def scaleDown(self):
-<<<<<<< HEAD
-		for x,y in self.REMISSED_PATIENTS.items():
-			scaled = []
 	def get_trainset(self,split, label,vectorize = False):
 		split = int(split*len(self.REMISSED_PATIENTS.items()))
 		train_data = self.REMISSED_PATIENTS.items()[:split]
@@ -146,7 +142,10 @@ class getData:
 		print trn_data
 		tst_data = test_data + test_datares
 		return trn_data,tst_data
-=======
+
+	def scaleDown(self):
+		for x,y in self.REMISSED_PATIENTS.items():
+			scaled = []
 		ind = 1
 		while (ind<len(self.REMISSED_PATIENTS["Patient166"])):
 		 	total = 0
@@ -180,19 +179,6 @@ class getData:
 					REMISSED_PATIENTS[patient][ind] = (REMISSED_PATIENTS[patient][ind] - average)/(len(REMISSED_PATIENTS)/2)
 			i = i+1
 
-	def get_trainset(self,split):
-		split = int(split*len(REMISSED_PATIENTS.items()))
-		train_data = REMISSED_PATIENTS.items()[:split]
-		test_data = REMISSED_PATIENTS.items()[split:]
-		train_out =[y[266] for x,y in train_data]
-		train_in = [x[:266] for x,y in train_data]
-		trn_data = zip(train_out,train_in)
-		return trn_data
->>>>>>> 070ded8b6df949f7b4d23416e952fdbe04ce50ac
 
-if __name__ == "__getData__":
-	read()
-	toFloat()
-	scaleDown()
 			
 
