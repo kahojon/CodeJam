@@ -138,9 +138,12 @@ class getData:
 				elif(train_out[x] == -1):
 					train_out[x] = [0,1]
 		train_in = train_in + train_tempin
-		trn_data = zip(train_out,train_in)
+		trn_data = zip(np.asarray(train_out),np.asarray(train_in))
 		tst_data = test_data + test_datares
-		return trn_data,tst_data
+		tst_in = [x[:label] for y,x in tst_data]
+		tst_out = [x[label] for y,x in tst_data]
+		tst = zip(np.asarray(tst_out),np.asarray(tst_in))
+		return trn_data,tst
 
 	def scaleDown(self):
 		for x,y in self.REMISSED_PATIENTS.items():

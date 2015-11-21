@@ -47,7 +47,7 @@ class Network(object):
                 training_data[k:k+mini_batch_s]
                 for k in xrange(0, n, mini_batch_s)]
             for mini_batch in mini_batches:
-                self.update_mini_batch(
+                self.update(
                     mini_batch, eta, len(training_data))
             print "Epoch %s training complete" % j
 
