@@ -10,7 +10,7 @@ import numpy as np
 # F = 1, M=-1
 # Chemos: ANTHRA_HDAC = 0, HDAC-PLUS=1, FLU_HDAC = 2; STDARAC-PLUS = 3
 class getData:
-	def __init__(self):
+	def __init__(self, scale=False):
 		self.REMISSED_PATIENTS = {}
 		self.RESISTANT_PATIENTS = {}
 		self.M_Rem_Pat = {}
@@ -19,6 +19,9 @@ class getData:
 		self.F_Res_Pat = {}
 		self.read()
 		self.toFloat()
+		if scale:
+			self.scaleDown()
+		
 
 	def read(self):
 		with open('trainingData.txt', "rU") as infile, open('trainingData.csv', 'wb') as outfile:
@@ -41,21 +44,21 @@ class getData:
 						self.RESISTANT_PATIENTS["Patient"+str(counter)]=row
 				counter = counter+1
 
-		# Parses male and female for remissed
-		for patient in self.REMISSED_PATIENTS:
-			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
-				if var == 'M':
-					self.M_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
-				if var == 'F':
-					self.F_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
+		# # Parses male and female for remissed
+		# for patient in self.REMISSED_PATIENTS:
+		# 	for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
+		# 		if var == 'M':
+		# 			self.M_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
+		# 		if var == 'F':
+		# 			self.F_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
 
-		# Parses male and female for resistant
-		for patient in self.RESISTANT_PATIENTS:
-			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
-				if var == 'M':
-					self.M_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
-				if var == 'F':
-					self.F_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
+		# # Parses male and female for resistant
+		# for patient in self.RESISTANT_PATIENTS:
+		# 	for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
+		# 		if var == 'M':
+		# 			self.M_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
+		# 		if var == 'F':
+		# 			self.F_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
 
 		for patient in self.REMISSED_PATIENTS:
 			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
@@ -84,14 +87,17 @@ class getData:
 						if var == 'StdAraC-Plus':
 							var = '3'
 							self.REMISSED_PATIENTS[patient][ind] = var 
+						if var == 'Anthra-Plus':
+							var ='4'
+							self.REMISSED_PATIENTS[patient][ind] = var 
 
 		for patient in self.RESISTANT_PATIENTS:
 			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
 				# Yes/No responses
-						if var in ('YES', 'COMPLETE_REMISSION', 'POS', 'F'):
+						if var in ('YES', 'Yes', 'COMPLETE_REMISSION', 'POS', 'F'):
 							var = '1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
-						if var in ('No', 'RESISTANT', 'NEG', 'M') :
+						if var in ('No', 'NO','RESISTANT', 'NEG', 'M') :
 							var='-1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
 						# No information
@@ -112,6 +118,10 @@ class getData:
 						if var == 'StdAraC-Plus':
 							var = '3'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
+						if var == 'Anthra-Plus':
+							var ='4'
+							self.RESISTANT_PATIENTS[patient][ind] = var 
+
 	#Removes the patient ID				
 	def toFloat(self):
 		for x,y in self.REMISSED_PATIENTS.items():
@@ -119,6 +129,11 @@ class getData:
 			for m in y[1:]:
 				float_elements.append(float(m))
 				self.REMISSED_PATIENTS[x] = float_elements
+		for x,y in self.RESISTANT_PATIENTS.items():
+			float_elements = []
+			for m in y[1:]:
+				float_elements.append(float(m))
+				self.RESISTANT_PATIENTS[x] = float_elements
 
 	def get_trainset(self,split, label,vectorize = False):
 		split = int(split*len(self.REMISSED_PATIENTS.items()))
@@ -139,44 +154,47 @@ class getData:
 					train_out[x] = [0,1]
 		train_in = train_in + train_tempin
 		trn_data = zip(train_out,train_in)
+		# print trn_data
 		tst_data = test_data + test_datares
 		return trn_data,tst_data
 
 	def scaleDown(self):
-		for x,y in self.REMISSED_PATIENTS.items():
-			scaled = []
-		ind = 1
-		while (ind<len(self.REMISSED_PATIENTS["Patient166"])):
-		 	total = 0
-			for patient, y in self.REMISSED_PATIENTS.items():
-				p = patient
-				# print REMISSED_PATIENTS[patient][ind]
-				total = total + (REMISSED_PATIENTS[patient][ind])
-			
-			average = total/len(self.REMISSED_PATIENTS)
-			
-			if average > 1:
-				for patient in self.REMISSED_PATIENTS:
+			print "Scaling"
+			for x,y in self.REMISSED_PATIENTS.items():
+				scaled = []
+			ind = 1
+			while (ind<267):
+			 	total = 0
+				for patient, y in self.REMISSED_PATIENTS.items():
+					p = patient
 					# print REMISSED_PATIENTS[patient][ind]
-					REMISSED_PATIENTS[patient][ind] = (REMISSED_PATIENTS[patient][ind] - average)/(len(REMISSED_PATIENTS)/2)
+					total = total + (self.REMISSED_PATIENTS[patient][ind])
+				
+				average = total/len(self.REMISSED_PATIENTS)
+				
+				if average > 1:
+					for patient in self.REMISSED_PATIENTS:
+						# print REMISSED_PATIENTS[patient][ind]
+						self.REMISSED_PATIENTS[patient][ind] = (self.REMISSED_PATIENTS[patient][ind] - average)/(len(self.REMISSED_PATIENTS)/2)
 
-			ind = ind +1 
+				ind = ind +1 
 
-		i = 1
-		while (ind<len(self.RESISTANT_PATIENTS["Patient165"])):
-		 	total = 0
-			for patient, y in self.RESISTANT_PATIENTS.items():
-				p = patient
-				# print REMISSED_PATIENTS[patient][ind]
-				total = total + (RESISTANT_PATIENTS[patient][ind])
-			
-			average = total/len(self.RESISTANT_PATIENTS)
-			
-			if average > 1:
-				for patient in self.RESISTANT_PATIENTS:
+			i = 1
+			while (i<267):
+			 	total = 0
+				for patient, y in self.RESISTANT_PATIENTS.items():
+					p = patient
 					# print REMISSED_PATIENTS[patient][ind]
-					REMISSED_PATIENTS[patient][ind] = (REMISSED_PATIENTS[patient][ind] - average)/(len(REMISSED_PATIENTS)/2)
-			i = i+1
+					total = total + (self.RESISTANT_PATIENTS[patient][ind])
+				
+				average = total/len(self.RESISTANT_PATIENTS)
+				
+				if average > 1:
+					for patient in self.RESISTANT_PATIENTS:
+						# print REMISSED_PATIENTS[patient][ind]
+						self.RESISTANT_PATIENTS[patient][ind] = (self.RESISTANT_PATIENTS[patient][ind] - average)/(len(self.REMISSED_PATIENTS)/2)
+				i = i+1
 
 
 			
+
