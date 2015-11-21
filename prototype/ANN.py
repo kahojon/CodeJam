@@ -56,7 +56,7 @@ class NeuralNet(object):
            
         def back_prop(self,inp,output):
                 #print inp
-                print output.shape
+                print output
                 nweights = [np.zeros(w.shape) for w in self.weights]
                 nbias = [np.zeros(b.shape) for b in self.bias]
                 activation = np.array(inp)

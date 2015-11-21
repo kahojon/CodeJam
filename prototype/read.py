@@ -42,20 +42,20 @@ class getData:
 				counter = counter+1
 
 		# Parses male and female for remissed
-		for patient in REMISSED_PATIENTS:
-			for ind, var in enumerate(REMISSED_PATIENTS[patient]):
+		for patient in self.REMISSED_PATIENTS:
+			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
 				if var == 'M':
-					M_Rem_Pat[patient] = REMISSED_PATIENTS[patient]
+					self.M_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
 				if var == 'F':
-					F_Rem_Pat[patient] = REMISSED_PATIENTS[patient]
+					self.F_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
 
 		# Parses male and female for resistant
-		for patient in RESISTANT_PATIENTS:
-			for ind, var in enumerate(RESISTANT_PATIENTS[patient]):
+		for patient in self.RESISTANT_PATIENTS:
+			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
 				if var == 'M':
-					M_Res_Pat[patient] = RESISTANT_PATIENTS[patient]
+					self.M_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
 				if var == 'F':
-					F_Res_Pat[patient] = RESISTANT_PATIENTS[patient]
+					self.F_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
 
 		for patient in self.REMISSED_PATIENTS:
 			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
@@ -139,7 +139,6 @@ class getData:
 					train_out[x] = [0,1]
 		train_in = train_in + train_tempin
 		trn_data = zip(train_out,train_in)
-		print trn_data
 		tst_data = test_data + test_datares
 		return trn_data,tst_data
 
