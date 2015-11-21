@@ -57,8 +57,8 @@ class Network(object):
         nws = [np.zeros(w.shape) for w in self.weights]
         for y, x in mini_batch:
             delta_nbs, delta_nws = self.backprop(x, y)
-            nabla_b = [nb+dnb for nb, dnb in zip(nbs, delta_nbs)]
-            nabla_w = [nw+dnw for nw, dnw in zip(nws, delta_nws)]
+            nbs = [nb+dnb for nb, dnb in zip(nbs, delta_nbs)]
+            nws = [nw+dnw for nw, dnw in zip(nws, delta_nws)]
         self.weights = [w-(eta/len(mini_batch))*nw
                         for w, nw in zip(self.weights, nws)]
         self.biases = [b-(eta/len(mini_batch))*nb
@@ -77,7 +77,7 @@ class Network(object):
             activation = sigmoid(z)
             activations.append(activation)
         # backward pass
-        delta = (self.cost).delta(zs[-1], activations[-1], y)
+        delta = (self.cost).cost_der(zs[-1], activations[-1], y)
         nbs[-1] = delta
         nws[-1] = np.dot(delta, activations[-2].transpose())
         for l in xrange(2, self.num_layers):
@@ -86,7 +86,7 @@ class Network(object):
             delta = np.dot(self.weights[-l+1].transpose(), delta) * sp
             nbs[-l] = delta
             nws[-l] = np.dot(delta, activations[-l-1].transpose())
-        return (nabla_b, nabla_w)
+        return (nbs, nws)
 
 def sigmoid(z):
 
