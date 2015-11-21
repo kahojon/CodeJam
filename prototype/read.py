@@ -10,7 +10,7 @@ import numpy as np
 # F = 1, M=-1
 # Chemos: ANTHRA_HDAC = 0, HDAC-PLUS=1, FLU_HDAC = 2; STDARAC-PLUS = 3
 class getData:
-	def __init__(self):
+	def __init__(self,scale = False):
 		self.REMISSED_PATIENTS = {}
 		self.RESISTANT_PATIENTS = {}
 		self.M_Rem_Pat = {}
@@ -18,6 +18,9 @@ class getData:
 		self.M_Res_Pat = {}
 		self.F_Res_Pat = {}
 		self.read()
+		# if scale:
+			# self.read()
+			# self.scaleDown()
 		self.toFloat()
 
 	def read(self):
@@ -88,10 +91,10 @@ class getData:
 		for patient in self.RESISTANT_PATIENTS:
 			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
 				# Yes/No responses
-						if var in ('YES', 'COMPLETE_REMISSION', 'POS', 'F'):
+						if var in ('Yes','YES', 'COMPLETE_REMISSION', 'POS', 'F'):
 							var = '1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
-						if var in ('No', 'RESISTANT', 'NEG', 'M') :
+						if var in ('NotDone','No','NO', 'RESISTANT', 'NEG', 'M') :
 							var='-1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
 						# No information
@@ -112,6 +115,9 @@ class getData:
 						if var == 'StdAraC-Plus':
 							var = '3'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
+						if var == 'Anthra-Plus':
+							var = '4'
+							self.RESISTANT_PATIENTS[patient][ind] = var
 	#Removes the patient ID				
 	def toFloat(self):
 		for x,y in self.REMISSED_PATIENTS.items():
@@ -119,6 +125,12 @@ class getData:
 			for m in y[1:]:
 				float_elements.append(float(m))
 				self.REMISSED_PATIENTS[x] = float_elements
+		for x,y in self.RESISTANT_PATIENTS.items():
+			float_elements = []
+			for m in y[1:]:
+				float_elements.append(float(m))
+				self.RESISTANT_PATIENTS[x] = float_elements
+		  
 
 	def get_trainset(self,split, label,vectorize = False):
 		split = int(split*len(self.REMISSED_PATIENTS.items()))
@@ -139,20 +151,23 @@ class getData:
 					train_out[x] = [0,1]
 		train_in = train_in + train_tempin
 		trn_data = zip(train_out,train_in)
-		print trn_data
 		tst_data = test_data + test_datares
-		return trn_data,tst_data
+		t_in = [y[:label] for x,y in tst_data]
+		t_out = [y[label] for x,y in tst_data]
+
+		testing = zip(t_out,t_in)
+		return trn_data,testing
 
 	def scaleDown(self):
 		for x,y in self.REMISSED_PATIENTS.items():
 			scaled = []
 		ind = 1
-		while (ind<len(self.REMISSED_PATIENTS["Patient166"])):
+		while (ind<len(self.RESISTANT_PATIENTS["Patient166"])):
 		 	total = 0
 			for patient, y in self.REMISSED_PATIENTS.items():
 				p = patient
 				# print REMISSED_PATIENTS[patient][ind]
-				total = total + (self.REMISSED_PATIENTS[patient][ind])
+				total = total + int(self.REMISSED_PATIENTS[patient][ind])
 			
 			average = total/len(self.REMISSED_PATIENTS)
 			
@@ -164,7 +179,7 @@ class getData:
 			ind = ind +1 
 
 		i = 1
-		while (ind<len(self.RESISTANT_PATIENTS["Patient165"])):
+		while (i<len(self.RESISTANT_PATIENTS["Patient165"])):
 		 	total = 0
 			for patient, y in self.RESISTANT_PATIENTS.items():
 				p = patient
