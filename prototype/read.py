@@ -30,9 +30,11 @@ class getData:
 
 		with open('trainingData.csv', 'r') as csvfile:
 			spamreader = csv.reader(csvfile, delimiter=',', quotechar='"')
+			spamreader.next()
+			spamreader.next()
 			counter = 0
 			for row in spamreader:
-				for ind, var in enumerate(row[1:]):
+				for ind, var in enumerate(row[2:]):
 					if var == 'COMPLETE_REMISSION':
 						self.REMISSED_PATIENTS["Patient"+str(counter)]=row
 					if var == 'RESISTANT':
@@ -40,20 +42,20 @@ class getData:
 				counter = counter+1
 
 		# Parses male and female for remissed
-		for patient in self.REMISSED_PATIENTS:
-			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
+		for patient in REMISSED_PATIENTS:
+			for ind, var in enumerate(REMISSED_PATIENTS[patient]):
 				if var == 'M':
-					self.M_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
+					M_Rem_Pat[patient] = REMISSED_PATIENTS[patient]
 				if var == 'F':
-					self.F_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
+					F_Rem_Pat[patient] = REMISSED_PATIENTS[patient]
 
 		# Parses male and female for resistant
-		for patient in self.RESISTANT_PATIENTS:
-			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
+		for patient in RESISTANT_PATIENTS:
+			for ind, var in enumerate(RESISTANT_PATIENTS[patient]):
 				if var == 'M':
-					self.M_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
+					M_Res_Pat[patient] = RESISTANT_PATIENTS[patient]
 				if var == 'F':
-					self.F_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
+					F_Res_Pat[patient] = RESISTANT_PATIENTS[patient]
 
 		for patient in self.REMISSED_PATIENTS:
 			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
@@ -65,7 +67,7 @@ class getData:
 							var='-1'
 							self.REMISSED_PATIENTS[patient][ind] = var 
 						# No information
-						if var in ('NA','ND'):
+						if var in ('NA', 'ND','NotDone'):
 							var = '0'
 							self.REMISSED_PATIENTS[patient][ind] = var  
 
@@ -82,21 +84,18 @@ class getData:
 						if var == 'StdAraC-Plus':
 							var = '3'
 							self.REMISSED_PATIENTS[patient][ind] = var 
-						if var == 'Anthra-Plus':
-							var  = '4'
-							self.RESISTANT_PATIENTS[patient][ind] = var
 
 		for patient in self.RESISTANT_PATIENTS:
 			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
 				# Yes/No responses
-						if var in ('Yes','YES', 'COMPLETE_REMISSION', 'POS', 'F'):
+						if var in ('YES', 'COMPLETE_REMISSION', 'POS', 'F'):
 							var = '1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
-						if var in ('NotDone','No','NO', 'RESISTANT', 'NEG', 'M') :
+						if var in ('No', 'RESISTANT', 'NEG', 'M') :
 							var='-1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
 						# No information
-						if var in ('NA','ND'):
+						if var in ('NA', 'ND', 'NotDone'):
 							var = '0'
 							self.RESISTANT_PATIENTS[patient][ind] = var  
 
@@ -110,42 +109,63 @@ class getData:
 						if var == 'Flu-HDAC':
 							var = '2'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
-						if var == 'Anthra-Plus':
-							var  = '4'
-							self.RESISTANT_PATIENTS[patient][ind] = var 
 						if var == 'StdAraC-Plus':
 							var = '3'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
-					
+	#Removes the patient ID				
 	def toFloat(self):
 		for x,y in self.REMISSED_PATIENTS.items():
 			float_elements = []
 			for m in y[1:]:
 				float_elements.append(float(m))
 				self.REMISSED_PATIENTS[x] = float_elements
-		for x,y in self.RESISTANT_PATIENTS.items():
-			float_elements = []
-			for m in y[1:]:
-				float_elements.append(float(m))
-				self.RESISTANT_PATIENTS[x] = float_elements
 
 	def scaleDown(self):
-		for x,y in self.REMISSED_PATIENTS.items():
-			scaled = []
-	def get_trainset(self,split, label):
-		split = int(split*len(self.REMISSED_PATIENTS.items()))
-		train_data = self.REMISSED_PATIENTS.items()[:split]
-		test_data = self.REMISSED_PATIENTS.items()[split:]
-		train_datares = self.RESISTANT_PATIENTS.items()[:split]
-		test_datares = self.RESISTANT_PATIENTS.items()[split:]
-		train_out =[y[label] for x,y in train_data]
-		train_in = [y[:label] for x,y in train_data]
-		train_out = train_out + [x[label] for y,x in self.RESISTANT_PATIENTS.items()]
-		train_in = train_in + [x[:label] for y,x in self.RESISTANT_PATIENTS.items()]
-		trn_data = zip(train_out,train_in)
-		tst_data = test_data + test_datares
-		return trn_data,tst_data
+		ind = 1
+		while (ind<len(self.REMISSED_PATIENTS["Patient166"])):
+		 	total = 0
+			for patient, y in self.REMISSED_PATIENTS.items():
+				p = patient
+				# print REMISSED_PATIENTS[patient][ind]
+				total = total + (REMISSED_PATIENTS[patient][ind])
+			
+			average = total/len(self.REMISSED_PATIENTS)
+			
+			if average > 1:
+				for patient in self.REMISSED_PATIENTS:
+					# print REMISSED_PATIENTS[patient][ind]
+					REMISSED_PATIENTS[patient][ind] = (REMISSED_PATIENTS[patient][ind] - average)/(len(REMISSED_PATIENTS)/2)
 
-	
+			ind = ind +1 
+
+		i = 1
+		while (ind<len(self.RESISTANT_PATIENTS["Patient165"])):
+		 	total = 0
+			for patient, y in self.RESISTANT_PATIENTS.items():
+				p = patient
+				# print REMISSED_PATIENTS[patient][ind]
+				total = total + (RESISTANT_PATIENTS[patient][ind])
+			
+			average = total/len(self.RESISTANT_PATIENTS)
+			
+			if average > 1:
+				for patient in self.RESISTANT_PATIENTS:
+					# print REMISSED_PATIENTS[patient][ind]
+					REMISSED_PATIENTS[patient][ind] = (REMISSED_PATIENTS[patient][ind] - average)/(len(REMISSED_PATIENTS)/2)
+			i = i+1
+
+	def get_trainset(self,split):
+		split = int(split*len(REMISSED_PATIENTS.items()))
+		train_data = REMISSED_PATIENTS.items()[:split]
+		test_data = REMISSED_PATIENTS.items()[split:]
+		train_out =[y[266] for x,y in train_data]
+		train_in = [x[:266] for x,y in train_data]
+		trn_data = zip(train_out,train_in)
+		return trn_data
+
+if __name__ == "__getData__":
+	read()
+	toFloat()
+	scaleDown()
 			
 
