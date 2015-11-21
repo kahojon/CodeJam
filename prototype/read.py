@@ -44,21 +44,21 @@ class getData:
 						self.RESISTANT_PATIENTS["Patient"+str(counter)]=row
 				counter = counter+1
 
-		# Parses male and female for remissed
-		for patient in self.REMISSED_PATIENTS:
-			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
-				if var == 'M':
-					self.M_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
-				if var == 'F':
-					self.F_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
+		# # Parses male and female for remissed
+		# for patient in self.REMISSED_PATIENTS:
+		# 	for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
+		# 		if var == 'M':
+		# 			self.M_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
+		# 		if var == 'F':
+		# 			self.F_Rem_Pat[patient] = self.REMISSED_PATIENTS[patient]
 
-		# Parses male and female for resistant
-		for patient in self.RESISTANT_PATIENTS:
-			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
-				if var == 'M':
-					self.M_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
-				if var == 'F':
-					self.F_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
+		# # Parses male and female for resistant
+		# for patient in self.RESISTANT_PATIENTS:
+		# 	for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
+		# 		if var == 'M':
+		# 			self.M_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
+		# 		if var == 'F':
+		# 			self.F_Res_Pat[patient] = self.RESISTANT_PATIENTS[patient]
 
 		for patient in self.REMISSED_PATIENTS:
 			for ind, var in enumerate(self.REMISSED_PATIENTS[patient]):
@@ -87,14 +87,24 @@ class getData:
 						if var == 'StdAraC-Plus':
 							var = '3'
 							self.REMISSED_PATIENTS[patient][ind] = var 
+						if var == 'Anthra-Plus':
+							var ='4'
+							self.REMISSED_PATIENTS[patient][ind] = var 
 
 		for patient in self.RESISTANT_PATIENTS:
 			for ind, var in enumerate(self.RESISTANT_PATIENTS[patient]):
 				# Yes/No responses
+<<<<<<< HEAD
 						if var in ('Yes','YES', 'COMPLETE_REMISSION', 'POS', 'F'):
 							var = '1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
 						if var in ('NotDone','No','NO', 'RESISTANT', 'NEG', 'M') :
+=======
+						if var in ('YES', 'Yes', 'COMPLETE_REMISSION', 'POS', 'F'):
+							var = '1'
+							self.RESISTANT_PATIENTS[patient][ind] = var 
+						if var in ('No', 'NO','RESISTANT', 'NEG', 'M') :
+>>>>>>> 97ed8a1322219cdbac2c52065fe96e4fd9d7c1b2
 							var='-1'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
 						# No information
@@ -116,8 +126,14 @@ class getData:
 							var = '3'
 							self.RESISTANT_PATIENTS[patient][ind] = var 
 						if var == 'Anthra-Plus':
+<<<<<<< HEAD
 							var = '4'
 							self.RESISTANT_PATIENTS[patient][ind] = var
+=======
+							var ='4'
+							self.RESISTANT_PATIENTS[patient][ind] = var 
+
+>>>>>>> 97ed8a1322219cdbac2c52065fe96e4fd9d7c1b2
 	#Removes the patient ID				
 	def toFloat(self):
 		for x,y in self.REMISSED_PATIENTS.items():
@@ -130,7 +146,10 @@ class getData:
 			for m in y[1:]:
 				float_elements.append(float(m))
 				self.RESISTANT_PATIENTS[x] = float_elements
+<<<<<<< HEAD
 		  
+=======
+>>>>>>> 97ed8a1322219cdbac2c52065fe96e4fd9d7c1b2
 
 	def get_trainset(self,split, label,vectorize = False):
 		split = int(split*len(self.REMISSED_PATIENTS.items()))
@@ -150,6 +169,7 @@ class getData:
 				elif(train_out[x] == -1):
 					train_out[x] = [0,1]
 		train_in = train_in + train_tempin
+<<<<<<< HEAD
 		trn_data = zip(train_out,train_in)
 		tst_data = test_data + test_datares
 		t_in = [y[:label] for x,y in tst_data]
@@ -157,6 +177,15 @@ class getData:
 
 		testing = zip(t_out,t_in)
 		return trn_data,testing
+=======
+		trn_data = zip(np.asarray(train_out),np.asarray(train_in))
+		# print trn_data
+		tst_data = test_data + test_datares
+		tst_in = [x[:label] for y,x in tst_data]
+		tst_out = [x[label] for y,x in tst_data]
+		tst = zip(np.asarray(tst_out),np.asarray(tst_in))
+		return trn_data,tst
+>>>>>>> 97ed8a1322219cdbac2c52065fe96e4fd9d7c1b2
 
 	def scaleDown(self):
 		for x,y in self.REMISSED_PATIENTS.items():
