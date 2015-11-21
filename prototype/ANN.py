@@ -39,7 +39,7 @@ class NeuralNet(object):
                 nb = [np.zeros(b.shape)for b in self.bias]
                 nw = [np.zeros(w.shape)for w in self.weights]
                 #print nw
-                for x,y in mini_batch:
+                for y,x in mini_batch:
                     nweights,nbias = self.back_prop(x,y)
                     #print nweights
                     #print zip(nweights,nw)
@@ -56,6 +56,7 @@ class NeuralNet(object):
            
         def back_prop(self,inp,output):
                 #print inp
+                print output.shape
                 nweights = [np.zeros(w.shape) for w in self.weights]
                 nbias = [np.zeros(b.shape) for b in self.bias]
                 activation = np.array(inp)
@@ -106,13 +107,11 @@ from read import getData as gd
 if __name__ =='__main__':
     
     g = gd()
-    train_data = g.get_trainset(0.8)
+    train_data = g.get_trainset(0.8,265,vectorize = True)
     train_set = train_data[0]
-    print train_set
     test_set = train_data[1]
-    n = NeuralNet([266,100,100,2])
+    n = NeuralNet([265,100,100,2])
     n.train(10,train_set,0.01,100)
-
     print n.feed(test_set[0][1])
     print n.feed(test_set[0][0])
 

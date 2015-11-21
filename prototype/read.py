@@ -132,7 +132,7 @@ class getData:
 	def scaleDown(self):
 		for x,y in self.REMISSED_PATIENTS.items():
 			scaled = []
-	def get_trainset(self,split, label):
+	def get_trainset(self,split, label,vectorize = False):
 		split = int(split*len(self.REMISSED_PATIENTS.items()))
 		train_data = self.REMISSED_PATIENTS.items()[:split]
 		test_data = self.REMISSED_PATIENTS.items()[split:]
@@ -140,9 +140,18 @@ class getData:
 		test_datares = self.RESISTANT_PATIENTS.items()[split:]
 		train_out =[y[label] for x,y in train_data]
 		train_in = [y[:label] for x,y in train_data]
-		train_out = train_out + [x[label] for y,x in self.RESISTANT_PATIENTS.items()]
-		train_in = train_in + [x[:label] for y,x in self.RESISTANT_PATIENTS.items()]
+		train_temp = [x[label] for y,x in self.RESISTANT_PATIENTS.items()]
+		train_tempin = [x[:label] for y,x in self.RESISTANT_PATIENTS.items()]
+		train_out = train_out + train_temp
+		if vectorize:
+			for x in xrange(len(train_out)):
+				if(train_out[x] == 1):
+					train_out[x] = [1,0]
+				elif(train_out[x] == -1):
+					train_out[x] = [0,1]
+		train_in = train_in + train_tempin
 		trn_data = zip(train_out,train_in)
+		print trn_data
 		tst_data = test_data + test_datares
 		return trn_data,tst_data
 
