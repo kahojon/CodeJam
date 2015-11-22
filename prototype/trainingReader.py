@@ -9,7 +9,7 @@ import numpy as np
 #NEG=-1, POS=1
 # F = 1, M=-1
 # Chemos: ANTHRA_HDAC = 0, HDAC-PLUS=1, FLU_HDAC = 2; STDARAC-PLUS = 3
-class getData:
+class getData():
 	def __init__(self):
 		self.REMISSED_PATIENTS = {}
 		self.RESISTANT_PATIENTS = {}
@@ -20,8 +20,13 @@ class getData:
 		self.read()
 		self.toFloat()
 
-	def read(self):
-		with open('trainingData.txt', "rU") as infile, open('trainingData.csv', 'wb') as outfile:
+	def read(self, filename='trainingData.txt'):
+		name = filename
+		if filename.endswith(".txt"):
+			name = filename[0:-4]
+		if filename.endswith(".in"):
+			name = filename[0:-3]
+		with open(filename, "rU") as infile, open(name + '.csv', 'wb') as outfile:
 		    in_txt = csv.reader(infile, delimiter = '\t')
 		    out_csv = csv.writer(outfile)
 		    out_csv.writerows(in_txt)
